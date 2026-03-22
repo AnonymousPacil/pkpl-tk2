@@ -4,17 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Biodata Kelompok Anonymous Pacil</h1>
+<body class="bg-gray-100 p-10">
 
-    <div>
-        <h5>NPM: </h5>
-        <p>{{ npm }}<p>
-        <h5>Nama: </h5>
-        <p>{{ nama }}<p>
-        <h5>Jenis Kelamin: </h5>
-        <p>{{ jenis_kelamin }}<p>
+    <h1 class="text-3xl font-bold mb-8 text-center">
+        Biodata Anggota Kelompok AnonymousPacil
+    </h1>
+
+    <form method="get" class="mb-6 flex gap-4">
+
+        <!-- Font Style -->
+        <select name="font" class="border p-2 rounded">
+            <option value="font-sans">Sans</option>
+            <option value="font-serif">Serif</option>
+            <option value="font-mono">Mono</option>
+        </select>
+
+        <!-- Color Wheel -->
+        <input 
+            type="color" 
+            name="warna" 
+            value="{{ warna }}"
+            class="w-12 h-10 border rounded"
+        >
+
+        <button class="bg-blue-500 text-white px-4 py-2 rounded">
+            Terapkan
+        </button>
+
+    </form>
+
+    <!-- Biodata Anggota -->
+    <div class="flex flex-wrap gap-6 {{ font }}">
+
+        {% for a in anggota %}
+        
+        <!-- Card -->
+        <div class="bg-white shadow-lg rounded-xl p-6 w-64 hover:shadow-2xl transition"
+             style="color: {{ warna }}">
+
+            <div class="text-center mb-4">
+
+                <!-- Foto dummy -->
+                <div class="w-20 h-20 bg-gray-300 rounded-full mx-auto mb-3"></div>
+
+                <h2 class="text-xl font-bold">
+                    {{ a.nama }}
+                </h2>
+
+            </div>
+
+            <div class="space-y-2">
+
+                <p>
+                    <span class="font-semibold">NPM:</span> 
+                    {{ a.npm }}
+                </p>
+
+                <p>
+                    <span class="font-semibold">Jenis Kelamin:</span> 
+                    {{ a.jenis_kelamin }}
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
     </div>
 </body>
 </html>
