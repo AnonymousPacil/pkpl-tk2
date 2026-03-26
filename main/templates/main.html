@@ -1,48 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Biodata Anggota</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 p-10">
 
-    <h1 class="text-3xl font-bold mb-8 text-center">
+<body class="p-10" style="background-color: {{ bg_color }}">
+
+    <div class="flex justify-end gap-4 mb-6">
+
+        {% if user.is_authenticated %}
+        {% if is_member %}
+        <a href="{% url 'main:site_settings' %}"
+            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+            ⚙ Settings
+        </a>
+        {% endif %}
+
+        <span class="px-4 py-2 text-sm" style="color: {{ warna }}">
+            Hi, {{ user.email }}
+        </span>
+
+        <a href="{% url 'main:logout' %}" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
+            Logout
+        </a>
+        {% else %}
+        <a href="{% url 'main:login' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+            Login with Google
+        </a>
+        {% endif %}
+
+    </div>
+
+    <h1 class="text-3xl font-bold mb-8 text-center" style="color: {{ warna }}">
         Biodata Anggota Kelompok AnonymousPacil
     </h1>
 
-    <form method="get" class="mb-6 flex gap-4">
-
-        <!-- Font Style -->
-        <select name="font" class="border p-2 rounded">
-            <option value="font-sans">Sans</option>
-            <option value="font-serif">Serif</option>
-            <option value="font-mono">Mono</option>
-        </select>
-
-        <!-- Color Wheel -->
-        <input 
-            type="color" 
-            name="warna" 
-            value="{{ warna }}"
-            class="w-12 h-10 border rounded"
-        >
-
-        <button class="bg-blue-500 text-white px-4 py-2 rounded">
-            Terapkan
-        </button>
-
-    </form>
-
     <!-- Biodata Anggota -->
-    <div class="flex flex-wrap gap-6 {{ font }}">
+    <div class="flex flex-wrap gap-6 justify-center {{ font }}">
 
         {% for a in anggota %}
-        
+
         <!-- Card -->
-        <div class="bg-white shadow-lg rounded-xl p-6 w-64 hover:shadow-2xl transition"
-             style="color: {{ warna }}">
+        <div class="bg-white shadow-lg rounded-xl p-6 w-64 hover:shadow-2xl transition" style="color: {{ warna }}">
 
             <div class="text-center mb-4">
 
@@ -58,12 +61,12 @@
             <div class="space-y-2">
 
                 <p>
-                    <span class="font-semibold">NPM:</span> 
-                    {{ a.npm }}
+                    <span class="font-semibold">NPM:</span>
+                    {{ a.NPM }}
                 </p>
 
                 <p>
-                    <span class="font-semibold">Jenis Kelamin:</span> 
+                    <span class="font-semibold">Jenis Kelamin:</span>
                     {{ a.jenis_kelamin }}
                 </p>
 
@@ -75,4 +78,5 @@
 
     </div>
 </body>
+
 </html>

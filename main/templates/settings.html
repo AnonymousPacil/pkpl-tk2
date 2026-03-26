@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Settings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 p-10">
+
+    <div class="max-w-md mx-auto bg-white rounded-xl shadow-lg p-8">
+
+        <h1 class="text-2xl font-bold mb-6 text-center">Site Appearance Settings</h1>
+
+        <p class="text-sm text-gray-500 mb-4 text-center">
+            Logged in as: <strong>{{ user.email }}</strong>
+        </p>
+
+        <form method="post" class="space-y-5">
+            {% csrf_token %}
+
+            <div>
+                <label class="block font-semibold mb-1">Background Color</label>
+                <input type="color" name="background_color" value="{{ settings.background_color }}"
+                    class="w-full h-12 border rounded cursor-pointer">
+            </div>
+
+            <div>
+                <label class="block font-semibold mb-1">Text Color</label>
+                <input type="color" name="text_color" value="{{ settings.text_color }}"
+                    class="w-full h-12 border rounded cursor-pointer">
+            </div>
+
+            <div>
+                <label class="block font-semibold mb-1">Font Family</label>
+                <select name="font_family" class="w-full border p-2 rounded">
+                    <option value="font-sans" {% if settings.font_family == 'font-sans' %}selected{% endif %}>Sans
+                    </option>
+                    <option value="font-serif" {% if settings.font_family == 'font-serif' %}selected{% endif %}>Serif
+                    </option>
+                    <option value="font-mono" {% if settings.font_family == 'font-mono' %}selected{% endif %}>Mono
+                    </option>
+                </select>
+            </div>
+
+            <button type="submit"
+                class="w-full bg-green-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-green-700 transition">
+                Save Settings
+            </button>
+        </form>
+
+        <a href="{% url 'main:show_anggota' %}" class="block text-center mt-4 text-blue-600 hover:underline">
+            ← Back to Homepage
+        </a>
+
+    </div>
+
+</body>
+
+</html>
