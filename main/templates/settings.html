@@ -1,62 +1,368 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Site Settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ["'Space Grotesk'", "ui-sans-serif", "system-ui"],
+                        serif: ["'Cormorant Garamond'", "ui-serif", "Georgia"],
+                        mono: ["'IBM Plex Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
+                    },
+                    boxShadow: {
+                        glow: "0 30px 90px -40px rgba(15, 23, 42, 0.45)",
+                    },
+                    keyframes: {
+                        rise: {
+                            "0%": { opacity: "0", transform: "translateY(24px)" },
+                            "100%": { opacity: "1", transform: "translateY(0)" },
+                        },
+                    },
+                    animation: {
+                        rise: "rise 0.7s ease-out forwards",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        :root {
+            color-scheme: light;
+        }
+
+        body {
+            --page-bg: {{ settings.background_color }};
+            --page-text: {{ settings.text_color }};
+            --page-panel: rgba(255, 255, 255, 0.72);
+            --page-panel-strong: rgba(255, 255, 255, 0.88);
+            --page-line: rgba(255, 255, 255, 0.48);
+            background-color: var(--page-bg);
+            color: var(--page-text);
+            background-image:
+                radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.45), transparent 28%),
+                radial-gradient(circle at 88% 12%, rgba(15, 23, 42, 0.10), transparent 26%),
+                linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 55%);
+        }
+
+        @supports (background: color-mix(in srgb, white 50%, black 50%)) {
+            body {
+                --page-panel: color-mix(in srgb, var(--page-bg) 84%, white 16%);
+                --page-panel-strong: color-mix(in srgb, var(--page-bg) 72%, white 28%);
+                --page-line: color-mix(in srgb, var(--page-text) 18%, white 82%);
+                background-image:
+                    radial-gradient(circle at 12% 18%, color-mix(in srgb, white 62%, var(--page-bg) 38%), transparent 28%),
+                    radial-gradient(circle at 88% 12%, color-mix(in srgb, var(--page-text) 10%, var(--page-bg) 90%), transparent 26%),
+                    linear-gradient(135deg, color-mix(in srgb, white 10%, var(--page-bg) 90%), color-mix(in srgb, black 8%, var(--page-bg) 92%));
+            }
+
+            .theme-muted {
+                color: color-mix(in srgb, var(--page-text) 78%, white 22%);
+                opacity: 1;
+            }
+
+            #previewSurface {
+                background-image:
+                    radial-gradient(circle at 15% 18%, color-mix(in srgb, white 55%, var(--preview-bg) 45%), transparent 30%),
+                    radial-gradient(circle at 88% 14%, color-mix(in srgb, var(--preview-text) 10%, var(--preview-bg) 90%), transparent 28%),
+                    linear-gradient(135deg, color-mix(in srgb, white 10%, var(--preview-bg) 90%), color-mix(in srgb, black 8%, var(--preview-bg) 92%));
+            }
+        }
+
+        .theme-panel {
+            background-color: var(--page-panel-strong);
+            border-color: var(--page-line);
+            backdrop-filter: blur(16px);
+        }
+
+        .theme-panel-soft {
+            background-color: var(--page-panel);
+            border-color: var(--page-line);
+            backdrop-filter: blur(16px);
+        }
+
+        .theme-muted {
+            opacity: 0.78;
+        }
+
+        #previewSurface {
+            --preview-bg: {{ settings.background_color }};
+            --preview-text: {{ settings.text_color }};
+            background-color: var(--preview-bg);
+            color: var(--preview-text);
+            background-image:
+                radial-gradient(circle at 15% 18%, rgba(255, 255, 255, 0.35), transparent 30%),
+                radial-gradient(circle at 88% 14%, rgba(15, 23, 42, 0.10), transparent 28%),
+                linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 55%);
+        }
+    </style>
 </head>
+<body class="{{ settings.font_family }} min-h-screen antialiased">
+    <div class="relative isolate min-h-screen overflow-hidden px-6 py-8 sm:px-8 lg:px-10">
+        <div class="pointer-events-none absolute left-[-6rem] top-[-5rem] -z-10 h-64 w-64 rounded-full bg-white/30 blur-3xl"></div>
+        <div class="pointer-events-none absolute bottom-[-8rem] right-[-5rem] -z-10 h-72 w-72 rounded-full bg-slate-950/10 blur-3xl"></div>
 
-<body class="bg-gray-100 p-10">
+        <main class="mx-auto flex max-w-7xl flex-col gap-8">
+            {% include "includes/navbar.html" %}
 
-    <div class="max-w-md mx-auto bg-white rounded-xl shadow-lg p-8">
+            <div class="grid gap-8 lg:grid-cols-[1.02fr_0.98fr]">
+            <section class="theme-panel rounded-[34px] border p-8 shadow-glow opacity-0 animate-rise lg:sticky lg:top-8 lg:h-fit">
+                <p class="text-xs font-semibold uppercase tracking-[0.35em] theme-muted">Live preview</p>
+                <h1 class="mt-4 text-4xl font-semibold leading-tight sm:text-5xl">Tune the site appearance</h1>
+                <p class="theme-muted mt-4 max-w-xl text-base leading-7">
+                    The controls still save the same settings, but now you can preview the feel of the homepage before
+                    committing the change.
+                </p>
 
-        <h1 class="text-2xl font-bold mb-6 text-center">Site Appearance Settings</h1>
+                <div class="mt-5 inline-flex rounded-full border border-white/50 bg-white/35 px-4 py-2 text-sm">
+                    Logged in as <span class="ml-2 font-semibold">{{ user.email }}</span>
+                </div>
 
-        <p class="text-sm text-gray-500 mb-4 text-center">
-            Logged in as: <strong>{{ user.email }}</strong>
-        </p>
+                <div id="previewSurface"
+                    class="{{ settings.font_family }} mt-8 overflow-hidden rounded-[30px] border border-white/60 p-6 shadow-2xl transition duration-300">
+                    <div class="rounded-[28px] border border-white/50 bg-white/20 p-5 backdrop-blur">
+                        <div class="flex items-center justify-between gap-4">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-[0.35em] opacity-70">Homepage preview</p>
+                                <p class="mt-2 text-lg font-semibold">AnonymousPacil</p>
+                            </div>
+                            <span class="rounded-full border border-white/60 bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em]">
+                                Live
+                            </span>
+                        </div>
 
-        <form method="post" class="space-y-5">
-            {% csrf_token %}
+                        <h2 class="mt-6 text-3xl font-semibold leading-tight">Biodata Anggota</h2>
+                        <p class="mt-3 max-w-lg text-sm leading-6 opacity-80">
+                            Colors and typography update here as you edit the controls.
+                        </p>
 
-            <div>
-                <label class="block font-semibold mb-1">Background Color</label>
-                <input type="color" name="background_color" value="{{ settings.background_color }}"
-                    class="w-full h-12 border rounded cursor-pointer">
+                        <div class="mt-6 grid gap-4 sm:grid-cols-2">
+                            <div class="rounded-[24px] border border-white/50 bg-white/20 p-4">
+                                <div class="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/60 bg-white/20 text-lg font-semibold">
+                                    A
+                                </div>
+                                <p class="mt-4 text-lg font-semibold">Alya</p>
+                                <p class="mt-1 text-sm opacity-80">NPM 230000001</p>
+                                <p class="mt-1 text-sm opacity-80">Perempuan</p>
+                            </div>
+                            <div class="rounded-[24px] border border-white/50 bg-white/20 p-4">
+                                <div class="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/60 bg-white/20 text-lg font-semibold">
+                                    R
+                                </div>
+                                <p class="mt-4 text-lg font-semibold">Rafi</p>
+                                <p class="mt-1 text-sm opacity-80">NPM 230000002</p>
+                                <p class="mt-1 text-sm opacity-80">Laki-laki</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 grid gap-4 sm:grid-cols-3">
+                    <div class="rounded-[24px] border border-white/50 bg-white/30 p-4">
+                        <p class="text-xs uppercase tracking-[0.25em] theme-muted">Background</p>
+                        <p id="backgroundValue" class="mt-2 text-sm font-semibold">{{ settings.background_color }}</p>
+                    </div>
+                    <div class="rounded-[24px] border border-white/50 bg-white/30 p-4">
+                        <p class="text-xs uppercase tracking-[0.25em] theme-muted">Text color</p>
+                        <p id="textValue" class="mt-2 text-sm font-semibold">{{ settings.text_color }}</p>
+                    </div>
+                    <div class="rounded-[24px] border border-white/50 bg-white/30 p-4">
+                        <p class="text-xs uppercase tracking-[0.25em] theme-muted">Font</p>
+                        <p id="fontValue" class="mt-2 text-sm font-semibold">
+                            {% if settings.font_family == 'font-sans' %}Space Grotesk{% elif settings.font_family == 'font-serif' %}Cormorant Garamond{% else %}IBM Plex Mono{% endif %}
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="theme-panel-soft rounded-[34px] border p-8 shadow-glow opacity-0 animate-rise"
+                style="animation-delay: 120ms;">
+                <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.35em] theme-muted">Settings</p>
+                        <h2 class="mt-2 text-3xl font-semibold">Appearance controls</h2>
+                        <p class="theme-muted mt-3 max-w-xl text-sm leading-6">
+                            Changes go live on the homepage right after save. Only registered group members can access
+                            this page.
+                        </p>
+                    </div>
+
+                    <a href="{% url 'main:show_anggota' %}"
+                        class="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-white">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M19 12H5"></path>
+                            <path d="M12 19l-7-7 7-7"></path>
+                        </svg>
+                        Back to homepage
+                    </a>
+                </div>
+
+                <form id="appearanceForm" method="post" class="mt-8 space-y-6">
+                    {% csrf_token %}
+
+                    <div class="rounded-[28px] border border-white/60 bg-white/40 p-5">
+                        <div class="flex flex-wrap items-start justify-between gap-4">
+                            <div>
+                                <label for="backgroundColor" class="block text-lg font-semibold">Background color</label>
+                                <p class="theme-muted mt-1 text-sm">Sets the overall atmosphere behind every section.</p>
+                            </div>
+                            <span id="backgroundBadge"
+                                class="rounded-full border border-white/60 bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-slate-900">
+                                {{ settings.background_color }}
+                            </span>
+                        </div>
+
+                        <div class="mt-4 flex items-center gap-4">
+                            <input id="backgroundColor" type="color" name="background_color"
+                                value="{{ settings.background_color }}"
+                                class="h-16 w-20 cursor-pointer rounded-2xl border border-white/60 bg-transparent p-1">
+                            <div id="backgroundSwatch" class="h-12 flex-1 rounded-2xl border border-white/50"
+                                style="background-color: {{ settings.background_color }};"></div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-[28px] border border-white/60 bg-white/40 p-5">
+                        <div class="flex flex-wrap items-start justify-between gap-4">
+                            <div>
+                                <label for="textColor" class="block text-lg font-semibold">Text color</label>
+                                <p class="theme-muted mt-1 text-sm">Controls headings, labels, and the member details.</p>
+                            </div>
+                            <span id="textBadge"
+                                class="rounded-full border border-white/60 bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-slate-900">
+                                {{ settings.text_color }}
+                            </span>
+                        </div>
+
+                        <div class="mt-4 flex items-center gap-4">
+                            <input id="textColor" type="color" name="text_color" value="{{ settings.text_color }}"
+                                class="h-16 w-20 cursor-pointer rounded-2xl border border-white/60 bg-transparent p-1">
+                            <div id="textSwatch" class="h-12 flex-1 rounded-2xl border border-white/50"
+                                style="background-color: {{ settings.text_color }};"></div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-[28px] border border-white/60 bg-white/40 p-5">
+                        <div class="flex flex-wrap items-start justify-between gap-4">
+                            <div>
+                                <label for="fontFamily" class="block text-lg font-semibold">Font family</label>
+                                <p class="theme-muted mt-1 text-sm">Choose the personality of the homepage typography.</p>
+                            </div>
+                            <span id="fontBadge"
+                                class="rounded-full border border-white/60 bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-slate-900">
+                                {% if settings.font_family == 'font-sans' %}Space Grotesk{% elif settings.font_family == 'font-serif' %}Cormorant Garamond{% else %}IBM Plex Mono{% endif %}
+                            </span>
+                        </div>
+
+                        <select id="fontFamily" name="font_family"
+                            class="mt-4 w-full rounded-2xl border border-white/60 bg-white/70 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-slate-950/20 focus:ring-4 focus:ring-white/60">
+                            <option value="font-sans" {% if settings.font_family == 'font-sans' %}selected{% endif %}>Sans</option>
+                            <option value="font-serif" {% if settings.font_family == 'font-serif' %}selected{% endif %}>Serif</option>
+                            <option value="font-mono" {% if settings.font_family == 'font-mono' %}selected{% endif %}>Mono</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center sm:justify-between">
+                        <p class="theme-muted max-w-xl text-sm leading-6">
+                            The preview updates as you edit. Reset restores the original default look and saves it using
+                            the current form.
+                        </p>
+
+                        <div class="flex flex-col gap-3 sm:flex-row">
+                            <button id="resetAppearanceButton" type="button"
+                                class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/60 bg-white/70 px-6 py-4 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-white">
+                                Reset to default
+                            </button>
+
+                            <button type="submit"
+                                class="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-950 px-6 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800">
+                                Save settings
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </section>
             </div>
-
-            <div>
-                <label class="block font-semibold mb-1">Text Color</label>
-                <input type="color" name="text_color" value="{{ settings.text_color }}"
-                    class="w-full h-12 border rounded cursor-pointer">
-            </div>
-
-            <div>
-                <label class="block font-semibold mb-1">Font Family</label>
-                <select name="font_family" class="w-full border p-2 rounded">
-                    <option value="font-sans" {% if settings.font_family == 'font-sans' %}selected{% endif %}>Sans
-                    </option>
-                    <option value="font-serif" {% if settings.font_family == 'font-serif' %}selected{% endif %}>Serif
-                    </option>
-                    <option value="font-mono" {% if settings.font_family == 'font-mono' %}selected{% endif %}>Mono
-                    </option>
-                </select>
-            </div>
-
-            <button type="submit"
-                class="w-full bg-green-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-green-700 transition">
-                Save Settings
-            </button>
-        </form>
-
-        <a href="{% url 'main:show_anggota' %}" class="block text-center mt-4 text-blue-600 hover:underline">
-            ← Back to Homepage
-        </a>
-
+        </main>
     </div>
 
-</body>
+    <script>
+        const DEFAULT_APPEARANCE = {
+            background: "#F3F4F6",
+            text: "#000000",
+            font: "font-sans",
+        };
 
+        const appearanceForm = document.getElementById("appearanceForm");
+        const previewSurface = document.getElementById("previewSurface");
+        const backgroundInput = document.getElementById("backgroundColor");
+        const textInput = document.getElementById("textColor");
+        const fontSelect = document.getElementById("fontFamily");
+        const backgroundValue = document.getElementById("backgroundValue");
+        const textValue = document.getElementById("textValue");
+        const fontValue = document.getElementById("fontValue");
+        const backgroundBadge = document.getElementById("backgroundBadge");
+        const textBadge = document.getElementById("textBadge");
+        const fontBadge = document.getElementById("fontBadge");
+        const backgroundSwatch = document.getElementById("backgroundSwatch");
+        const textSwatch = document.getElementById("textSwatch");
+        const resetAppearanceButton = document.getElementById("resetAppearanceButton");
+
+        function fontLabel(value) {
+            if (value === "font-serif") {
+                return "Cormorant Garamond";
+            }
+
+            if (value === "font-mono") {
+                return "IBM Plex Mono";
+            }
+
+            return "Space Grotesk";
+        }
+
+        function syncPreview() {
+            const background = (backgroundInput.value || "#F3F4F6").toUpperCase();
+            const text = (textInput.value || "#000000").toUpperCase();
+            const font = fontSelect.value || "font-sans";
+            const readableFont = fontLabel(font);
+
+            previewSurface.style.setProperty("--preview-bg", background);
+            previewSurface.style.setProperty("--preview-text", text);
+            previewSurface.classList.remove("font-sans", "font-serif", "font-mono");
+            previewSurface.classList.add(font);
+
+            backgroundValue.textContent = background;
+            textValue.textContent = text;
+            fontValue.textContent = readableFont;
+            backgroundBadge.textContent = background;
+            textBadge.textContent = text;
+            fontBadge.textContent = readableFont;
+            backgroundSwatch.style.backgroundColor = background;
+            textSwatch.style.backgroundColor = text;
+        }
+
+        backgroundInput.addEventListener("input", syncPreview);
+        textInput.addEventListener("input", syncPreview);
+        fontSelect.addEventListener("change", syncPreview);
+
+        resetAppearanceButton.addEventListener("click", function () {
+            backgroundInput.value = DEFAULT_APPEARANCE.background;
+            textInput.value = DEFAULT_APPEARANCE.text;
+            fontSelect.value = DEFAULT_APPEARANCE.font;
+            syncPreview();
+            appearanceForm.requestSubmit();
+        });
+
+        syncPreview();
+    </script>
+</body>
 </html>

@@ -1,0 +1,57 @@
+<header class="opacity-0 animate-rise">
+    <nav class="theme-panel-soft flex flex-col gap-4 rounded-[28px] border px-5 py-5 shadow-glow md:flex-row md:items-center md:justify-between">
+        <div class="flex items-center gap-3">
+            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-950 text-sm font-semibold text-white shadow-lg">
+                AP
+            </div>
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.35em] theme-muted">AnonymousPacil</p>
+                <p class="mt-1 text-lg font-semibold">Biodata Anggota</p>
+            </div>
+        </div>
+
+        <div class="flex flex-1 flex-wrap items-center gap-2 md:justify-center">
+            <a href="{% url 'main:show_anggota' %}"
+                class="{% if current_page == 'home' %}bg-slate-950 text-white{% else %}theme-panel border text-inherit{% endif %} inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold transition hover:-translate-y-0.5 hover:bg-slate-950 hover:text-white">
+                Home
+            </a>
+
+            {% if user.is_authenticated and is_member %}
+            <a href="{% url 'main:site_settings' %}"
+                class="{% if current_page == 'settings' %}bg-slate-950 text-white{% else %}theme-panel border text-inherit{% endif %} inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold transition hover:-translate-y-0.5 hover:bg-slate-950 hover:text-white">
+                Settings
+            </a>
+            {% endif %}
+        </div>
+
+        <div class="flex flex-wrap items-center justify-end gap-3">
+            {% if user.is_authenticated %}
+            <div class="theme-panel rounded-full border px-4 py-3 text-sm shadow-sm">
+                <span class="theme-muted">Signed in as</span>
+                <span class="ml-1 font-semibold">{{ user.email }}</span>
+            </div>
+
+            <a href="{% url 'main:logout' %}"
+                class="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/70 px-5 py-3 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-white">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <path d="M16 17l5-5-5-5"></path>
+                    <path d="M21 12H9"></path>
+                </svg>
+                Logout
+            </a>
+            {% else %}
+            <a href="{% url 'main:login' %}"
+                class="inline-flex items-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M5 12h14"></path>
+                    <path d="M12 5l7 7-7 7"></path>
+                </svg>
+                Login with Google
+            </a>
+            {% endif %}
+        </div>
+    </nav>
+</header>

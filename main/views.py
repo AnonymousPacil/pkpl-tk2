@@ -22,6 +22,7 @@ def show_anggota(request):
         "warna": settings.text_color,
         "bg_color": settings.background_color,
         "is_member": is_member(request.user),
+        "current_page": "home",
     }
 
     return render(request, "main.html", context)
@@ -50,6 +51,8 @@ def site_settings(request):
 
     context = {
         "settings": settings,
+        "is_member": True,
+        "current_page": "settings",
     }
     return render(request, "settings.html", context)
 

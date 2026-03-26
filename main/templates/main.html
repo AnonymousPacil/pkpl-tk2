@@ -1,82 +1,247 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biodata Anggota</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ["'Space Grotesk'", "ui-sans-serif", "system-ui"],
+                        serif: ["'Cormorant Garamond'", "ui-serif", "Georgia"],
+                        mono: ["'IBM Plex Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
+                    },
+                    boxShadow: {
+                        glow: "0 30px 90px -40px rgba(15, 23, 42, 0.45)",
+                    },
+                    keyframes: {
+                        rise: {
+                            "0%": { opacity: "0", transform: "translateY(24px)" },
+                            "100%": { opacity: "1", transform: "translateY(0)" },
+                        },
+                        drift: {
+                            "0%, 100%": { transform: "translate3d(0, 0, 0)" },
+                            "50%": { transform: "translate3d(0, -16px, 0)" },
+                        },
+                    },
+                    animation: {
+                        rise: "rise 0.7s ease-out forwards",
+                        drift: "drift 14s ease-in-out infinite",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        :root {
+            color-scheme: light;
+        }
+
+        body {
+            --theme-bg: {{ bg_color }};
+            --theme-text: {{ warna }};
+            --theme-panel: rgba(255, 255, 255, 0.72);
+            --theme-panel-strong: rgba(255, 255, 255, 0.88);
+            --theme-line: rgba(255, 255, 255, 0.48);
+            background-color: var(--theme-bg);
+            color: var(--theme-text);
+            background-image:
+                radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.45), transparent 28%),
+                radial-gradient(circle at 88% 12%, rgba(15, 23, 42, 0.10), transparent 26%),
+                linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 55%);
+        }
+
+        @supports (background: color-mix(in srgb, white 50%, black 50%)) {
+            body {
+                --theme-panel: color-mix(in srgb, var(--theme-bg) 84%, white 16%);
+                --theme-panel-strong: color-mix(in srgb, var(--theme-bg) 72%, white 28%);
+                --theme-line: color-mix(in srgb, var(--theme-text) 18%, white 82%);
+                background-image:
+                    radial-gradient(circle at 12% 18%, color-mix(in srgb, white 62%, var(--theme-bg) 38%), transparent 28%),
+                    radial-gradient(circle at 88% 12%, color-mix(in srgb, var(--theme-text) 10%, var(--theme-bg) 90%), transparent 26%),
+                    linear-gradient(135deg, color-mix(in srgb, white 10%, var(--theme-bg) 90%), color-mix(in srgb, black 8%, var(--theme-bg) 92%));
+            }
+
+            .theme-muted {
+                color: color-mix(in srgb, var(--theme-text) 78%, white 22%);
+                opacity: 1;
+            }
+        }
+
+        .theme-panel {
+            background-color: var(--theme-panel-strong);
+            border-color: var(--theme-line);
+            backdrop-filter: blur(16px);
+        }
+
+        .theme-panel-soft {
+            background-color: var(--theme-panel);
+            border-color: var(--theme-line);
+            backdrop-filter: blur(16px);
+        }
+
+        .theme-muted {
+            opacity: 0.78;
+        }
+    </style>
 </head>
+<body class="{{ font }} min-h-screen antialiased">
+    <div class="relative isolate overflow-hidden">
+        <div class="pointer-events-none absolute left-[-7rem] top-[-5rem] -z-10 h-64 w-64 rounded-full bg-white/30 blur-3xl animate-drift"></div>
+        <div class="pointer-events-none absolute bottom-[-8rem] right-[-4rem] -z-10 h-72 w-72 rounded-full bg-slate-950/10 blur-3xl animate-drift" style="animation-delay: 1.5s;"></div>
 
-<body class="p-10" style="background-color: {{ bg_color }}">
+        <main class="mx-auto flex min-h-screen max-w-7xl flex-col px-6 py-6 sm:px-8 lg:px-10">
+            {% include "includes/navbar.html" %}
 
-    <div class="flex justify-end gap-4 mb-6">
+            <section class="grid gap-8 py-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+                <div class="theme-panel relative overflow-hidden rounded-[34px] border p-8 shadow-glow opacity-0 animate-rise"
+                    style="animation-delay: 120ms;">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/35 via-transparent to-slate-950/5"></div>
 
-        {% if user.is_authenticated %}
-        {% if is_member %}
-        <a href="{% url 'main:site_settings' %}"
-            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
-            ⚙ Settings
-        </a>
-        {% endif %}
+                    <div class="relative">
+                        <div class="flex flex-wrap gap-3 text-sm font-medium">
+                            <span class="rounded-full border border-white/50 bg-white/60 px-4 py-2 backdrop-blur">
+                                Shared member directory
+                            </span>
+                            <span class="rounded-full border border-white/40 bg-white/40 px-4 py-2 backdrop-blur">
+                                {% if user.is_authenticated %}Welcome back{% else %}Guest preview{% endif %}
+                            </span>
+                        </div>
 
-        <span class="px-4 py-2 text-sm" style="color: {{ warna }}">
-            Hi, {{ user.email }}
-        </span>
+                        <h1 class="mt-8 max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl lg:text-[4.25rem]">
+                            Biodata Anggota Kelompok AnonymousPacil
+                        </h1>
 
-        <a href="{% url 'main:logout' %}" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
-            Logout
-        </a>
-        {% else %}
-        <a href="{% url 'main:login' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-            Login with Google
-        </a>
-        {% endif %}
+                        <p class="theme-muted mt-5 max-w-2xl text-base leading-7 sm:text-lg">
+                            Explore the team roster in a friendlier layout with clearer hierarchy, while the chosen colors
+                            and font still define the page identity.
+                        </p>
 
-    </div>
+                        <div class="mt-8 flex flex-wrap gap-4">
+                            <div class="theme-panel-soft rounded-2xl border px-5 py-4">
+                                <p class="text-xs uppercase tracking-[0.3em] theme-muted">Members</p>
+                                <p class="mt-2 text-3xl font-semibold">{{ anggota|length }}</p>
+                            </div>
+                            <div class="theme-panel-soft rounded-2xl border px-5 py-4">
+                                <p class="text-xs uppercase tracking-[0.3em] theme-muted">Customization</p>
+                                <p class="mt-2 text-lg font-semibold">
+                                    {% if is_member %}Enabled for you{% else %}View only{% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    <h1 class="text-3xl font-bold mb-8 text-center" style="color: {{ warna }}">
-        Biodata Anggota Kelompok AnonymousPacil
-    </h1>
+                <aside class="theme-panel-soft rounded-[30px] border p-6 shadow-glow opacity-0 animate-rise"
+                    style="animation-delay: 220ms;">
+                    <p class="text-xs font-semibold uppercase tracking-[0.35em] theme-muted">Current appearance</p>
 
-    <!-- Biodata Anggota -->
-    <div class="flex flex-wrap gap-6 justify-center {{ font }}">
+                    <div class="mt-5 space-y-4">
+                        <div class="rounded-[26px] border border-white/50 bg-white/40 p-5">
+                            <div class="flex items-center justify-between gap-4">
+                                <div>
+                                    <p class="text-sm theme-muted">Background</p>
+                                    <p class="mt-1 text-lg font-semibold">{{ bg_color }}</p>
+                                </div>
+                                <span class="h-12 w-12 rounded-2xl border border-white/70 shadow-inner"
+                                    style="background-color: {{ bg_color }};"></span>
+                            </div>
+                        </div>
 
-        {% for a in anggota %}
+                        <div class="rounded-[26px] border border-white/50 bg-white/40 p-5">
+                            <div class="flex items-center justify-between gap-4">
+                                <div>
+                                    <p class="text-sm theme-muted">Text color</p>
+                                    <p class="mt-1 text-lg font-semibold">{{ warna }}</p>
+                                </div>
+                                <span class="h-12 w-12 rounded-2xl border border-white/70 shadow-inner"
+                                    style="background-color: {{ warna }};"></span>
+                            </div>
+                        </div>
 
-        <!-- Card -->
-        <div class="bg-white shadow-lg rounded-xl p-6 w-64 hover:shadow-2xl transition" style="color: {{ warna }}">
+                        <div class="rounded-[26px] border border-white/50 bg-white/40 p-5">
+                            <p class="text-sm theme-muted">Font family</p>
+                            <p class="mt-1 text-lg font-semibold">
+                                {% if font == 'font-sans' %}Space Grotesk{% elif font == 'font-serif' %}Cormorant Garamond{% else %}IBM Plex Mono{% endif %}
+                            </p>
+                        </div>
+                    </div>
 
-            <div class="text-center mb-4">
+                    {% if is_member %}
+                    <a href="{% url 'main:site_settings' %}"
+                        class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-5 py-4 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50">
+                        Refine settings
+                    </a>
+                    {% else %}
+                    <p class="theme-muted mt-6 text-sm leading-6">
+                        Sign in with a registered member email to access the appearance controls.
+                    </p>
+                    {% endif %}
+                </aside>
+            </section>
 
-                <!-- Foto dummy -->
-                <div class="w-20 h-20 bg-gray-300 rounded-full mx-auto mb-3"></div>
+            <section class="pb-10">
+                <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.35em] theme-muted">Directory</p>
+                        <h2 class="mt-2 text-2xl font-semibold sm:text-3xl">Meet the members</h2>
+                    </div>
+                    <p class="text-sm theme-muted">{{ anggota|length }} member{{ anggota|length|pluralize }} listed</p>
+                </div>
 
-                <h2 class="text-xl font-bold">
-                    {{ a.nama }}
-                </h2>
+                {% if anggota %}
+                <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                    {% for a in anggota %}
+                    <article class="theme-panel group relative overflow-hidden rounded-[28px] border p-6 shadow-xl opacity-0 transition duration-300 hover:-translate-y-1 hover:shadow-2xl animate-rise"
+                        style="animation-delay: {{ forloop.counter0 }}00ms;">
+                        <div class="absolute inset-x-0 top-0 h-24 bg-gradient-to-r from-white/50 via-white/20 to-transparent"></div>
 
-            </div>
+                        <div class="relative">
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/70 bg-white/60 text-2xl font-semibold shadow-md">
+                                        {{ a.nama|slice:":1"|upper }}
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-semibold uppercase tracking-[0.28em] theme-muted">Member {{ forloop.counter }}</p>
+                                        <h3 class="mt-1 text-2xl font-semibold leading-tight">{{ a.nama }}</h3>
+                                    </div>
+                                </div>
+                                <div class="rounded-full border border-white/70 bg-white/40 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] theme-muted">
+                                    Active
+                                </div>
+                            </div>
 
-            <div class="space-y-2">
-
-                <p>
-                    <span class="font-semibold">NPM:</span>
-                    {{ a.NPM }}
-                </p>
-
-                <p>
-                    <span class="font-semibold">Jenis Kelamin:</span>
-                    {{ a.jenis_kelamin }}
-                </p>
-
-            </div>
-
-        </div>
-
-        {% endfor %}
-
+                            <div class="mt-8 grid gap-3">
+                                <div class="rounded-2xl border border-white/55 bg-white/40 px-4 py-3">
+                                    <p class="text-xs uppercase tracking-[0.25em] theme-muted">NPM</p>
+                                    <p class="mt-1 text-lg font-semibold">{{ a.NPM }}</p>
+                                </div>
+                                <div class="rounded-2xl border border-white/55 bg-white/40 px-4 py-3">
+                                    <p class="text-xs uppercase tracking-[0.25em] theme-muted">Jenis Kelamin</p>
+                                    <p class="mt-1 text-lg font-semibold">{{ a.jenis_kelamin }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="theme-panel rounded-[28px] border p-10 text-center shadow-glow">
+                    <h3 class="text-2xl font-semibold">No member data yet</h3>
+                    <p class="theme-muted mt-3 text-sm">Add biodata records and they will appear here automatically.</p>
+                </div>
+                {% endif %}
+            </section>
+        </main>
     </div>
 </body>
-
 </html>
