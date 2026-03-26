@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - AnonymousPacil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ["'Space Grotesk'", "ui-sans-serif", "system-ui"],
+                        serif: ["'Cormorant Garamond'", "ui-serif", "Georgia"],
+                        mono: ["'IBM Plex Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
+                    },
+                    boxShadow: { glow: "0 30px 90px -40px rgba(15, 23, 42, 0.45)" },
+                    keyframes: {
+                        rise: { "0%": { opacity: "0", transform: "translateY(24px)" }, "100%": { opacity: "1", transform: "translateY(0)" } },
+                        drift: { "0%, 100%": { transform: "translate3d(0, 0, 0)" }, "50%": { transform: "translate3d(0, -16px, 0)" } },
+                    },
+                    animation: { rise: "rise 0.7s ease-out forwards", drift: "drift 14s ease-in-out infinite" },
+                },
+            },
+        };
+    </script>
+    <style>
+        :root { color-scheme: light; }
+        body {
+            --theme-bg: {{ bg_color }};
+            --theme-text: {{ warna }};
+            --theme-panel: rgba(255, 255, 255, 0.72);
+            --theme-panel-strong: rgba(255, 255, 255, 0.88);
+            --theme-line: rgba(255, 255, 255, 0.48);
+            background-color: var(--theme-bg);
+            color: var(--theme-text);
+            background-image: radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.45), transparent 28%), radial-gradient(circle at 88% 12%, rgba(15, 23, 42, 0.10), transparent 26%), linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 55%);
+        }
+        @supports (background: color-mix(in srgb, white 50%, black 50%)) {
+            body {
+                --theme-panel: color-mix(in srgb, var(--theme-bg) 84%, white 16%);
+                --theme-panel-strong: color-mix(in srgb, var(--theme-bg) 72%, white 28%);
+                --theme-line: color-mix(in srgb, var(--theme-text) 18%, white 82%);
+                background-image: radial-gradient(circle at 12% 18%, color-mix(in srgb, white 62%, var(--theme-bg) 38%), transparent 28%), radial-gradient(circle at 88% 12%, color-mix(in srgb, var(--theme-text) 10%, var(--theme-bg) 90%), transparent 26%), linear-gradient(135deg, color-mix(in srgb, white 10%, var(--theme-bg) 90%), color-mix(in srgb, black 8%, var(--theme-bg) 92%));
+            }
+            .theme-muted { color: color-mix(in srgb, var(--theme-text) 78%, white 22%); opacity: 1; }
+        }
+        .theme-panel { background-color: var(--theme-panel-strong); border-color: var(--theme-line); backdrop-filter: blur(16px); }
+        .theme-muted { opacity: 0.78; }
+        
+        input {
+            width: 100%;
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            background-color: rgba(255, 255, 255, 0.4);
+            padding: 0.75rem 1rem;
+            outline: none;
+            transition: all 0.2s;
+            margin-bottom: 0.5rem;
+        }
+        input:focus {
+            background-color: rgba(255, 255, 255, 0.7);
+            border-color: rgba(15, 23, 42, 0.2);
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.6);
+        }
+        .helptext, .errorlist { font-size: 0.75rem; opacity: 0.8; margin-bottom: 1rem; display: block; }
+        .errorlist { color: #dc2626; list-style-type: none; padding: 0; }
+    </style>
+</head>
+<body class="{{ font }} min-h-screen antialiased flex flex-col">
+    {% load socialaccount %}
+    <div class="relative isolate overflow-hidden flex-1 flex flex-col justify-center items-center px-6 py-12">
+        <div class="pointer-events-none absolute left-[10%] top-[20%] -z-10 h-64 w-64 rounded-full bg-white/30 blur-3xl animate-drift"></div>
+        <div class="pointer-events-none absolute bottom-[10%] right-[10%] -z-10 h-72 w-72 rounded-full bg-slate-950/10 blur-3xl animate-drift" style="animation-delay: 1.5s;"></div>
+
+        <div class="w-full max-w-md theme-panel rounded-[34px] border p-8 shadow-glow opacity-0 animate-rise">
+            <div class="text-center mb-8">
+                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-950 text-xl font-semibold text-white shadow-lg mb-4">AP</div>
+                <h1 class="text-3xl font-semibold">Create account</h1>
+                <p class="theme-muted mt-2 text-sm">Join the team directory today.</p>
+            </div>
+
+            <form method="POST" class="space-y-4">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                <div>
+                    <label class="block text-sm font-semibold mb-1">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        {{ field.errors }}
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <button type="submit" class="w-full mt-4 rounded-2xl bg-slate-950 px-5 py-3.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-lg">
+                    Sign Up
+                </button>
+            </form>
+
+            <p class="mt-8 text-center text-sm theme-muted">
+                Already have an account? 
+                <a href="{% url 'main:login' %}" class="font-semibold text-slate-900 underline decoration-slate-900/30 underline-offset-4 hover:decoration-slate-900">Sign in</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

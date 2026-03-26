@@ -124,7 +124,7 @@
                 </p>
 
                 <div class="mt-5 inline-flex rounded-full border border-white/50 bg-white/35 px-4 py-2 text-sm">
-                    Logged in as <span class="ml-2 font-semibold">{{ user.email }}</span>
+                    Logged in as <span class="ml-2 font-semibold">{{ user.email|default:user.username }}</span>
                 </div>
 
                 <div id="previewSurface"

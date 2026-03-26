@@ -1,7 +1,9 @@
 <header class="opacity-0 animate-rise">
-    <nav class="theme-panel-soft flex flex-col gap-4 rounded-[28px] border px-5 py-5 shadow-glow md:flex-row md:items-center md:justify-between">
+    <nav
+        class="theme-panel-soft flex flex-col gap-4 rounded-[28px] border px-5 py-5 shadow-glow md:flex-row md:items-center md:justify-between">
         <div class="flex items-center gap-3">
-            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-950 text-sm font-semibold text-white shadow-lg">
+            <div
+                class="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-950 text-sm font-semibold text-white shadow-lg">
                 AP
             </div>
             <div>
@@ -28,7 +30,7 @@
             {% if user.is_authenticated %}
             <div class="theme-panel rounded-full border px-4 py-3 text-sm shadow-sm">
                 <span class="theme-muted">Signed in as</span>
-                <span class="ml-1 font-semibold">{{ user.email }}</span>
+                <span class="ml-1 font-semibold">{{ user.email|default:user.username }}</span>
             </div>
 
             <a href="{% url 'main:logout' %}"
@@ -49,8 +51,7 @@
                     <path d="M5 12h14"></path>
                     <path d="M12 5l7 7-7 7"></path>
                 </svg>
-                Login with Google
-            </a>
+                Sign In </a>
             {% endif %}
         </div>
     </nav>

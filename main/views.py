@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login, authenticate
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponseForbidden
 from .models import Biodata, SiteSetting
 
@@ -58,8 +59,52 @@ def site_settings(request):
 
 
 def login_view(request):
-    return redirect("/accounts/google/login/")
+    if request.user.is_authenticated:
+        return redirect("main:show_anggota")
+        
+    settings = SiteSetting.load()
+    
+    if request.method == "POST":
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect("main:show_anggota")
+    else:
+        form = AuthenticationForm()
 
+    context = {
+        "form": form,
+        "font": settings.font_family,
+        "warna": settings.text_color,
+        "bg_color": settings.background_color,
+        "current_page": "login",
+    }
+    return render(request, "login.html", context)
+
+def register_view(request):
+    if request.user.is_authenticated:
+        return redirect("main:show_anggota")
+        
+    settings = SiteSetting.load()
+    
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            return redirect("main:show_anggota")
+    else:
+        form = UserCreationForm()
+
+    context = {
+        "form": form,
+        "font": settings.font_family,
+        "warna": settings.text_color,
+        "bg_color": settings.background_color,
+        "current_page": "register",
+    }
+    return render(request, "register.html", context)
 
 def logout_view(request):
     logout(request)
