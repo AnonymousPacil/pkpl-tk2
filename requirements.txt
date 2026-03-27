@@ -5,9 +5,11 @@ charset-normalizer
 cryptography
 Django
 django-allauth
+gunicorn
 idna
-PyJWT
+packaging
 pycparser
+PyJWT
 requests
 sqlparse
 urllib3
