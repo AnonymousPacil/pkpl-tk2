@@ -25,8 +25,18 @@ SECRET_KEY = 'django-insecure-7xyj)#y7=as529c50$qr&j*$j-79ls=#3=&v4*ys2z29*8oyom
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "pkpl.faziltirtana.com",
+    "localhost",
+    "127.0.0.1",
+]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://pkpl.faziltirtana.com",
+    "http://pkpl.faziltirtana.com",
+    "http://localhost",
+    "http://127.0.0.1",
+]
 
 # Application definition
 
@@ -128,7 +138,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "/static/"
+
+STATIC_ROOT = BASE_DIR / "static"
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
